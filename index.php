@@ -32,7 +32,7 @@
 	echo $solarsteinn->compile(time(), $zones, '%e %B, *');
 	// Выведет  6 января, до полуночи
 	
-	echo $solarsteinn->compile("first day of last month", $zones, 'j F y h:i:s');
+	echo $solarsteinn->compile(date(time()), $zones, false);
 	// Выведет 1 декабря 12 11:47:31
 ?>
 </body>

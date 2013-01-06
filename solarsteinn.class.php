@@ -1,6 +1,6 @@
 <?php
 	class Solarsteinn {
-		const default_output_template = 'j F, *';
+		const default_output_template = '%e %B, *';
 		const downcase_output = true;
 		const lang = 'ru_RU';
 		const use_utf = true;
@@ -11,7 +11,10 @@
 		}
 
 		public static function compile ($time, $data, $outputTemplate = self::default_output_template) {
-			echo strftime($outputTemplate,self::parse_date($time));
+			if ($date = self::parse_date($time)) {
+				$compiled_date = strftime($outputTemplate, $date);
+				echo $compiled_date;
+			} else echo 'Output format error!';
 		}
 
 		private static function parse_date ($string) {
