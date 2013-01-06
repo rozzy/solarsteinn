@@ -1,4 +1,11 @@
-<?php
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<?php
 	require 'solarsteinn.class.php';
 
 	$time = time();
@@ -22,8 +29,11 @@
 
 	$solarsteinn = new Solarsteinn();
 
-	echo $solarsteinn->compile(time(), $zones, 'j F, *');
+	echo $solarsteinn->compile(time(), $zones, '%e %B, *');
 	// Выведет  6 января, до полуночи
 	
-	echo $solarsteinn->compile("Jan 6", $zones);
+	echo $solarsteinn->compile("first day of last month", $zones, 'j F y h:i:s');
+	// Выведет 1 декабря 12 11:47:31
 ?>
+</body>
+</html>
