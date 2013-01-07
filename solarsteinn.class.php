@@ -55,7 +55,7 @@
 
             if ($date = strtotime($time)) {
                 $compiled_date = strftime($outputTemplate, $date);
-                return self::parse_steinn($compiled_date, self::get_relative_time(time(), "назад"));
+                return self::parse_steinn($compiled_date, self::get_relative_time(1357585710, "назад"));
             } else return false;
         }
 
@@ -65,16 +65,21 @@
         }
 
         private static function get_relative_time ($time, $end_word = '', $compile_diff = false) {
-            $diff = $origin_diff = time() - strtotime($time);
-            if ($diff == 0) return self::$date_consts['now'];
+            if (is_integer($time) and date('c', time()))
+                $time = date('c', $time);
+            $strtotime = strtotime($time);
+            $diff = $origin_diff = time() - $strtotime;
+            if ($diff <= 10) return self::$date_consts['now'];
+            if (date("Y-m-d", strtotime("yesterday")) == date("Y-m-d", $strtotime)) return self::$date_consts['yesterday'];
             if ($diff < 60)
                 return trim(self::decline($diff, self::$date_consts['seconds']).' '.$end_word);
             $diff = round($diff / 60);
             if ($diff < 60)
                 return trim(self::decline($diff, self::$date_consts['minutes']).' '.$end_word);
             $diff = round($diff / 60);
-            if ($diff < 24)
+            if ($diff < 5)
                 return trim(self::decline($diff, self::$date_consts['hours']).' '.$end_word);
+            elseif (date("Y-m-d", strtotime("today") == date("Y-m-d", $strtotime))) return self::$date_consts['today'];
             return $compile_diff ? $origin_diff : false;
         }
 
