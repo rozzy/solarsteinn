@@ -27,12 +27,12 @@
 		'22:30...0:00' => 'до полуночи'
 	);
 
-	$solarsteinn = new Solarsteinn();
+	$solarsteinn = new Solarsteinn($zones);
 
-	echo $solarsteinn->compile(time(), $zones, '%e %B, *');
+	echo $solarsteinn->compile(time(), $zones, '%e %B, ЫЫ*'),'<br/>';
 	// Выведет  6 января, до полуночи
 	
-	echo $solarsteinn->compile(date(time()), $zones, false);
+	echo $solarsteinn->compile(date(time()), false, "%e");
 	// Выведет 1 декабря 12 11:47:31
 ?>
 </body>
