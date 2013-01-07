@@ -32,7 +32,7 @@
 	//echo $c->compile(time(), $zones, '%e %B, *');
 
 	/* Static method: */
-	echo Solarsteinn::compile('2 years ago', $zones, "%e %B, *")
+	echo Solarsteinn::compile();
 ?>
 </body>
 </html>
