@@ -33,7 +33,9 @@ class Solarsteinn {
             'hours' => array('час', 'часа', 'часов'),
             'ago' => 'назад'
         ),
-        $user_constants = array(); 
+        $user_constants = array(),
+        $user_timezones = array(),
+        $user_timeconsts = array();
 
     public function __construct($default_zones = false) {
         if (is_array($default_zones))
@@ -79,9 +81,18 @@ class Solarsteinn {
                 unset($zones[$key]);
                 self::$user_constants[$constants[1]] = $value;
             }
+
+            if (preg_match('/@([a-zA-Z0-9_]+)$/i', $value, $constants)) {
+                if (array_key_exists($constants[1], self::$user_constants))
+                    self::$user_timeconsts[$constants[1]] = self::parse_if_mixin($key);
+            }
         }
+
         echo "<pre>";
         print_r($zones);
+        print_r(self::$user_constants);
+        print_r(self::$user_timeconsts);
+        print_r(self::$user_timezones);
     }
 
     private static function get_relative_time ($time, $end_word = '', $compile_diff = false) {
