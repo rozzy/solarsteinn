@@ -27,13 +27,12 @@
 		'22:30...0:00' => 'до полуночи'
 	);
 
-	$solarsteinn = new Solarsteinn($zones);
+	/* Non-static method: */
+	//$c = new Solarsteinn();
+	//echo $c->compile(time(), $zones, '%e %B, *');
 
-	echo $solarsteinn->compile(time(), $zones, '%e %B, ЫЫ*'),'<br/>';
-	// Выведет  6 января, до полуночи
-	
-	echo $solarsteinn->compile(date(time()), false, "%e");
-	// Выведет 1 декабря 12 11:47:31
+	/* Static method: */
+	echo Solarsteinn::compile('2 years ago', $zones, "%e %B, *")
 ?>
 </body>
 </html>

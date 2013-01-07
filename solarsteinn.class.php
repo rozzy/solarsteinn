@@ -6,16 +6,29 @@
 			use_utf = true,
 			steinn_mark = "*";
 
-		private static $default_time_zones = array(); 
+		public static $default_time_zones = array();
+		public static $initialized = false; 
+
+		public function __call($_name, $_param) {
+			return 'Название метода: <b>'. $_name .'</b><br>
+		Аргументы метода: <pre>'. var_export($_param, true) .'</pre>
+		Массив аргументов метода: <pre>'. var_export(func_get_args(), true) .'</pre>
+		<b>'. implode('-', $_param) .'</b>';
+		}
 
 		public function __construct($default_zones = false) {
 			if (is_array($default_zones))
 				self::$default_time_zones = $default_zones;
 			if (self::use_utf) mb_internal_encoding('UTF-8');
 			setlocale(LC_TIME, (self::lang != '' ? self::lang : 'en_EN').(self::use_utf ? '.UTF-8' : ''));
+
+			self::$initialized = true;
 		}
 
 		public static function compile ($time, $data = false, $outputTemplate = self::default_output_template) {
+			if(!self::$initialized)
+				new self;
+
 			if (is_bool($data) and !$data) {
 				if (is_array(self::$default_time_zones) and !empty(self::$default_time_zones))
 					$data = self::$default_time_zones;  else return false;
@@ -23,7 +36,7 @@
 
 			if ($date = strtotime($time)) {
 				$compiled_date = strftime($outputTemplate, $date);
-				echo self::parse_steinn($compiled_date, 'утром');
+				return self::parse_steinn($compiled_date, 'утром');
 			} else return false;
 		}
 
