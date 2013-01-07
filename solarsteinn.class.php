@@ -32,7 +32,8 @@
                 'yesterday' => 'вчера',
                 'seconds' => array('секунда', 'секунды', 'секунд'),
                 'minutes' => array('минута', 'минуты', 'минут'),
-                'hours' => array('час', 'часа', 'часов')
+                'hours' => array('час', 'часа', 'часов'),
+                'ago' => 'назад'
             ); 
 
         public function __construct($default_zones = false) {
@@ -52,16 +53,27 @@
                 if (is_array(self::$default_time_zones) and !empty(self::$default_time_zones))
                     $data = self::$default_time_zones;  else return false;
             }
-
+            if (is_integer($time) and date('c', time()))
+                $time = date('c', $time);
             if ($date = strtotime($time)) {
-                $compiled_date = strftime($outputTemplate, $date);
-                return self::parse_steinn($compiled_date, self::get_relative_time(1357585710, "назад"));
+                return self::parse_steinn($date, $data, $outputTemplate);
             } else return false;
         }
 
-        private static function parse_steinn ($str, $value = '') {
-            $str = str_replace(self::steinn_mark, $value, $str);
-            return (self::downcase_output ? mb_strtolower($str) : $str);
+        private static function parse_steinn ($date, $data, $outputTemplate) {
+            if (time() - $date <= 10) 
+                return self::$date_consts['now'];
+
+            $is_today = date("Y-m-d", strtotime("today")) == date("Y-m-d", $date);
+            $compiled_date = $is_today ? self::$date_consts['today'].', *' :strftime($outputTemplate, $date);
+            
+            $to_compile = $is_today ? self::get_relative_time($date, self::$date_consts['ago']) : self::parse_zones($date, $data);
+            $compiled_date = str_replace(self::steinn_mark, $to_compile, $compiled_date);
+            return (self::downcase_output ? mb_strtolower($compiled_date) : $compiled_date);
+        }
+
+        private static function parse_zones ($date, $zones) {
+            return 'полночь'; #test
         }
 
         private static function get_relative_time ($time, $end_word = '', $compile_diff = false) {
@@ -69,7 +81,6 @@
                 $time = date('c', $time);
             $strtotime = strtotime($time);
             $diff = $origin_diff = time() - $strtotime;
-            if ($diff <= 10) return self::$date_consts['now'];
             if (date("Y-m-d", strtotime("yesterday")) == date("Y-m-d", $strtotime)) return self::$date_consts['yesterday'];
             if ($diff < 60)
                 return trim(self::decline($diff, self::$date_consts['seconds']).' '.$end_word);
@@ -77,7 +88,7 @@
             if ($diff < 60)
                 return trim(self::decline($diff, self::$date_consts['minutes']).' '.$end_word);
             $diff = round($diff / 60);
-            if ($diff < 5)
+            if ($diff <= 6)
                 return trim(self::decline($diff, self::$date_consts['hours']).' '.$end_word);
             elseif (date("Y-m-d", strtotime("today") == date("Y-m-d", $strtotime))) return self::$date_consts['today'];
             return $compile_diff ? $origin_diff : false;

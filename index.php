@@ -32,7 +32,7 @@
     //echo $c->compile(time(), $zones, '%e %B, *');
 
     /* Static method: */
-    echo Solarsteinn::compile('2 jan, 2012');
+    echo Solarsteinn::compile("-6 hours");
 ?>
 </body>
 </html>
